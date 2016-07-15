@@ -5,18 +5,15 @@ import Graphics.UI.GLUT
 import HaskellPong.Geometry
 
 class Renderable r where
-  lineSegments :: r -> [PLine]
+  triangleVertices :: r -> [PVector2]
 
   render :: r -> IO ()
-  render = renderLines . lineSegments
+  render = renderVertices . triangleVertices
 
-renderLines :: [PLine] -> IO ()
-renderLines lines = do
+renderVertices :: [PVector2] -> IO ()
+renderVertices verts = do
   currentColor $= Color4 1.0 1.0 1.0 1.0
-  renderPrimitive Lines $ mapM_ lineVerts lines
+  renderPrimitive Triangles $ mapM_ vectorToVert verts
 
-lineVerts :: PLine -> IO ()
-lineVerts (PLine(x, y)) = pointToVertex x >> pointToVertex y
-
-pointToVertex :: PVector2 -> IO ()
-pointToVertex = vertex . uncurry Vertex2
+vectorToVert :: PVector2 -> IO ()
+vectorToVert = vertex . uncurry Vertex2

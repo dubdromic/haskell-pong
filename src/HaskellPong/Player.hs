@@ -4,15 +4,16 @@ import HaskellPong.Sprite
 import HaskellPong.Geometry
 import HaskellPong.Render (Renderable(..))
 
-data Player = Player
-  { playerPaddle :: Sprite }
+data Player = Player {
+  playerPaddle :: Sprite
+}
 
 instance Renderable Player where
   triangleVertices (Player s) = map translation playerVertices
     where translation = translateVector $ spritePosition s
 
-initPlayer :: Player
-initPlayer = Player $ initSprite(400,300) 0 (0,0)
+initPlayer :: PVector2 -> Player
+initPlayer p = Player $ initSprite p 0 (0,0)
 
 playerVertices :: [PVector2]
 playerVertices = [

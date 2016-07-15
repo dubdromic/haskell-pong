@@ -2,13 +2,15 @@ module HaskellPong.Initialize where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
-import HaskellPong.Player
 import HaskellPong.Render
+import HaskellPong.GameState
+
+pongWindowSize = Size 800 600
 
 initializeWindow :: IO Window
 initializeWindow = do
   _ <- getArgsAndInitialize
-  initialWindowSize $= Size 800 600
+  initialWindowSize $= pongWindowSize
   initialDisplayMode $= [DoubleBuffered]
   createWindow "Pong?"
 
@@ -19,7 +21,7 @@ initializeGraphics = do
   blend $= Enabled
   blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   lineWidth $= 2.0
-  viewport $= (Position 0 0, Size 800 600)
+  viewport $= (Position 0 0, pongWindowSize)
   matrixMode $= Projection
   loadIdentity
   ortho 0 800 600 0 (-1) 1
@@ -29,7 +31,7 @@ initializeGraphics = do
 
 initializeCallbacks :: IO ()
 initializeCallbacks = do
-  displayCallback $= renderViewport initPlayer
+  displayCallback $= renderViewport initGameState
 
 renderViewport :: Renderable r => r -> IO ()
 renderViewport r = do

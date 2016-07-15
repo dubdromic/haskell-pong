@@ -2,6 +2,8 @@ module HaskellPong.Initialize where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
+import HaskellPong.Player
+import HaskellPong.Render
 
 initializeWindow :: IO Window
 initializeWindow = do
@@ -27,6 +29,10 @@ initializeGraphics = do
 
 initializeCallbacks :: IO ()
 initializeCallbacks = do
-  displayCallback $= do
-    clear [ColorBuffer]
-    swapBuffers
+  displayCallback $= renderViewport initPlayer
+
+renderViewport :: Renderable r => r -> IO ()
+renderViewport r = do
+  clear [ColorBuffer]
+  render r
+  swapBuffers

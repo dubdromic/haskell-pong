@@ -2,8 +2,9 @@ module HaskellPong.Initialize where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
+import HaskellPong.Tick
 import HaskellPong.Render
-import HaskellPong.GameState
+import HaskellPong.Callbacks
 
 pongWindowSize = Size 800 600
 
@@ -28,13 +29,3 @@ initializeGraphics = do
   matrixMode $= Modelview 0
   loadIdentity
   clearColor $= Color4 0.0 0.0 0.0 1.0
-
-initializeCallbacks :: IO ()
-initializeCallbacks = do
-  displayCallback $= renderViewport initGameState
-
-renderViewport :: Renderable r => r -> IO ()
-renderViewport r = do
-  clear [ColorBuffer]
-  render r
-  swapBuffers

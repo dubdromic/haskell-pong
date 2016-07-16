@@ -1,4 +1,6 @@
 module HaskellPong.Tick where
 
+import HaskellPong.Keyboard
+
 class Tickable t where
-  tick :: t -> t
+  tick :: Keyboard -> t -> t

@@ -1,5 +1,6 @@
 module HaskellPong.GameState where
 
+import HaskellPong.Keyboard
 import HaskellPong.Geometry
 import HaskellPong.Render
 import HaskellPong.Player
@@ -21,10 +22,10 @@ stateVertices p = pov ++ ptv
   where pov = (triangleVertices . playerOne) p
         ptv = (triangleVertices . playerTwo) p
 
-tickState :: GameState -> GameState
-tickState (GameState p1 p2) = GameState p1' p2'
-  where p1' = tick p1
-        p2' = tick p2
+tickState :: Keyboard -> GameState -> GameState
+tickState kb (GameState p1 p2) = GameState p1' p2'
+  where p1' = tick kb p1
+        p2' = tick kb p2
 
 initGameState :: GameState
 initGameState = GameState {

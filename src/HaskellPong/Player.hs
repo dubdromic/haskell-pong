@@ -1,5 +1,6 @@
 module HaskellPong.Player where
 
+import HaskellPong.Keyboard
 import HaskellPong.Tick
 import HaskellPong.Sprite
 import HaskellPong.Geometry
@@ -16,10 +17,14 @@ instance Renderable Player where
 instance Tickable Player where
   tick = tickPlayer
 
-tickPlayer :: Player -> Player
-tickPlayer (Player s) = Player $ Sprite pos 0 vel
+tickPlayer :: Keyboard -> Player -> Player
+tickPlayer kb (Player s) = Player $ initSprite pos 0 vel
   where pos = spritePosition s
-        vel = (0, 1)
+        vel
+          | key keyDown = (0, 10)
+          | key keyUp = (0, -10)
+          | otherwise = (0, 0)
+        key = isKeyDown kb
 
 initPlayer :: PVector2 -> Player
 initPlayer p = Player $ initSprite p 0 (0,0)

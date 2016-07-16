@@ -9,4 +9,4 @@ data Sprite = Sprite
   }
 
 initSprite :: PVector2 -> Float -> PVector2 -> Sprite
-initSprite = Sprite
+initSprite pos ang vel = Sprite (pos /+ vel) ang vel

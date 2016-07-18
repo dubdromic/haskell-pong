@@ -12,15 +12,15 @@ data GameState = GameState {
 }
 
 instance Renderable GameState where
-  triangleVertices = stateVertices
+  vertices = stateVertices
 
 instance Tickable GameState where
   tick = tickState
 
-stateVertices :: GameState -> [PVector2]
+stateVertices :: GameState -> [PTriangle]
 stateVertices p = pov ++ ptv
-  where pov = (triangleVertices . playerOne) p
-        ptv = (triangleVertices . playerTwo) p
+  where pov = (vertices . playerOne) p
+        ptv = (vertices . playerTwo) p
 
 tickState :: Keyboard -> GameState -> GameState
 tickState kb (GameState p1 p2) = GameState p1' p2'
@@ -29,6 +29,6 @@ tickState kb (GameState p1 p2) = GameState p1' p2'
 
 initGameState :: GameState
 initGameState = GameState {
-  playerOne = initPlayer(10, 10),
-  playerTwo = initPlayer(780, 10)
+  playerOne = initPlayer(10, 280),
+  playerTwo = initPlayer(780, 280)
 }

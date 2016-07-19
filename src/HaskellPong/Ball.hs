@@ -12,8 +12,8 @@ data Ball = Ball {
 }
 
 instance Renderable Ball where
-  vertices (Ball s) = map translation ballTriangles
-    where translation t = translateTriangle t $ spritePosition s
+  vertices (Ball s) = map translation [ballQuad]
+    where translation t = translateQuad t $ spritePosition s
 
 instance Tickable Ball where
   tick = tickBall
@@ -29,8 +29,5 @@ tickBall kb (Ball s) = Ball $ initSprite pos 0 vel
 initBall :: PVector2 -> Ball
 initBall p = Ball $ initSprite p 0 ballVelocity
 
-ballTriangles :: [PTriangle]
-ballTriangles = [
-  ((0.0, 0.0), (10.0, 0.0), (0.0, 10.0)),
-  ((0.0, 10.0), (10.0, 10.0), (10.0, 0.0))
-  ]
+ballQuad :: PQuad
+ballQuad = ((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0))

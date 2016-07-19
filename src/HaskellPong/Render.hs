@@ -5,17 +5,17 @@ import Graphics.UI.GLUT
 import HaskellPong.Geometry
 
 class Renderable r where
-  vertices :: r -> [PTriangle]
+  vertices :: r -> [PQuad]
 
   render :: r -> IO ()
   render = renderVertices . vertices
 
-renderVertices :: [PTriangle] -> IO ()
-renderVertices triangles = do
+renderVertices :: [PQuad] -> IO ()
+renderVertices quads = do
     currentColor $= Color4 1.0 1.0 1.0 1.0
-    renderPrimitive Triangles $ mapM_ vectorToVertex verts
-  where verts = concatMap toList triangles
-        toList (a, b, c) = [a, b, c]
+    renderPrimitive Quads $ mapM_ vectorToVertex verts
+  where verts = concatMap toList quads
+        toList (a, b, c, d) = [a, b, c, d]
 
 vectorToVertex :: PVector2 -> IO ()
 vectorToVertex = vertex . uncurry Vertex2

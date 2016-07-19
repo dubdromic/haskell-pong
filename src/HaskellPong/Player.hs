@@ -11,8 +11,8 @@ data Player = Player {
 }
 
 instance Renderable Player where
-  vertices (Player s) = map translation playerTriangles
-    where translation t = translateTriangle t $ spritePosition s
+  vertices (Player s) = map translation [playerQuad]
+    where translation t = translateQuad t $ spritePosition s
 
 instance Tickable Player where
   tick = tickPlayer
@@ -29,8 +29,5 @@ tickPlayer kb (Player s) = Player $ initSprite pos 0 vel
 initPlayer :: PVector2 -> Player
 initPlayer p = Player $ initSprite p 0 (0,0)
 
-playerTriangles :: [PTriangle]
-playerTriangles = [
-  ((0.0, 0.0), (10.0, 0.0), (0.0, 70.0)),
-  ((0.0, 70.0), (10.0, 70.0), (10.0, 0.0))
-  ]
+playerQuad :: PQuad
+playerQuad = ((0.0, 0.0), (10.0, 0.0), (10.0, 70.0), (0.0, 70.0))

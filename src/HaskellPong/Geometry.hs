@@ -2,11 +2,11 @@ module HaskellPong.Geometry where
 
 type PVectorValue = Float
 type PVector2 = (PVectorValue, PVectorValue)
-type PTriangle = (PVector2, PVector2, PVector2)
+type PQuad = (PVector2, PVector2, PVector2, PVector2)
 
-translateTriangle :: PTriangle -> PVector2 -> PTriangle
-translateTriangle t v = mapPTriangle (/+ v) t
-  where mapPTriangle f (a, b, c) = (f a, f b, f c)
+translateQuad :: PQuad -> PVector2 -> PQuad
+translateQuad t v = mapPQuad (/+ v) t
+  where mapPQuad f (a, b, c, d) = (f a, f b, f c, f d)
 
 (/+) :: PVector2 -> PVector2 -> PVector2
 (x, y) /+ (x', y') = (x + x', y + y')

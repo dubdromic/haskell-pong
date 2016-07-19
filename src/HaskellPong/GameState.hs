@@ -19,7 +19,7 @@ instance Renderable GameState where
 instance Tickable GameState where
   tick = tickState
 
-stateVertices :: GameState -> [PTriangle]
+stateVertices :: GameState -> [PQuad]
 stateVertices p = pov ++ ptv ++ bv
   where pov = (vertices . gameStatePlayerOne) p
         ptv = (vertices . gameStatePlayerTwo) p

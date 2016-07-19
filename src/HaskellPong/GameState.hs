@@ -29,7 +29,7 @@ tickState :: Keyboard -> GameState -> GameState
 tickState kb (GameState p1 p2 b) = GameState p1' p2' b'
   where p1' = tick kb p1
         p2' = tick kb p2
-        b'  = tick kb b
+        b'  = collideBall [p1', p2'] $ tick kb b
 
 initGameState :: GameState
 initGameState = GameState {

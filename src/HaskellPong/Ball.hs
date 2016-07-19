@@ -4,6 +4,7 @@ import HaskellPong.Keyboard
 import HaskellPong.Tick
 import HaskellPong.Sprite
 import HaskellPong.Geometry
+import HaskellPong.Collision
 import HaskellPong.Render (Renderable(..))
 
 
@@ -17,6 +18,18 @@ instance Renderable Ball where
 
 instance Tickable Ball where
   tick = tickBall
+
+instance Collider Ball where
+  vertices (Ball s) = translateQuad ballQuad $ spritePosition s
+
+collideBall :: Collider a => [a] -> Ball -> Ball
+collideBall a b@(Ball s) = Ball $ initSprite pos 0 vel'
+  where collided = any (collides b) a
+        pos@(px, py) = spritePosition s
+        (vx, vy) = spriteVelocity s
+        vel'
+          | collided = (-vx, vy)
+          | otherwise = spriteVelocity s
 
 tickBall :: Keyboard -> Ball -> Ball
 tickBall kb (Ball s) = Ball $ initSprite pos 0 vel

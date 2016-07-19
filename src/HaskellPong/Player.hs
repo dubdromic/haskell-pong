@@ -4,6 +4,7 @@ import HaskellPong.Keyboard
 import HaskellPong.Tick
 import HaskellPong.Sprite
 import HaskellPong.Geometry
+import HaskellPong.Collision
 import HaskellPong.Render (Renderable(..))
 
 data Player = Player {
@@ -16,6 +17,9 @@ instance Renderable Player where
 
 instance Tickable Player where
   tick = tickPlayer
+
+instance Collider Player where
+  vertices (Player s) = translateQuad playerQuad $ spritePosition s
 
 tickPlayer :: Keyboard -> Player -> Player
 tickPlayer kb (Player s) = Player $ initSprite pos 0 vel

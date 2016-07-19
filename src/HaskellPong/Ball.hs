@@ -18,16 +18,13 @@ instance Renderable Ball where
 instance Tickable Ball where
   tick = tickBall
 
-ballVelocity :: PVector2
-ballVelocity = (5, 5)
-
 tickBall :: Keyboard -> Ball -> Ball
 tickBall kb (Ball s) = Ball $ initSprite pos 0 vel
   where pos = spritePosition s
-        vel = ballVelocity
+        vel = spriteVelocity s
 
 initBall :: PVector2 -> Ball
-initBall p = Ball $ initSprite p 0 ballVelocity
+initBall p = Ball $ initSprite p 0 (5, 0)
 
 ballQuad :: PQuad
 ballQuad = ((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0))

@@ -6,6 +6,7 @@ import HaskellPong.Tick
 import HaskellPong.Render
 import HaskellPong.Keyboard
 import HaskellPong.GameState (initGameState)
+import System.Random
 
 type KeyboardRef = IORef Keyboard
 
@@ -15,9 +16,14 @@ handleKeyboard kb k ks _ _ = modifyIORef kb (handleKeyEvent k ks)
 initializeCallbacks :: IO ()
 initializeCallbacks = do
   kb <- newIORef initKeyboard
+  xgen <- newStdGen
+  let (x, ygen) = randomR (0, length list) xgen
+  let (y, _) = randomR (0, length list) ygen
+  let vector = (list !! x, list !! y)
   keyboardMouseCallback $= Just (handleKeyboard kb)
-  displayCallback $= renderViewport initGameState
-  addTimerCallback 0 $ gameTick kb initGameState
+  displayCallback $= renderViewport (initGameState vector)
+  addTimerCallback 0 $ gameTick kb (initGameState vector)
+  where list = [-5.0, -4.0, 4.0, 5.0]
 
 gameTick :: (Renderable t, Tickable t) => KeyboardRef -> t -> IO ()
 gameTick kb t = do

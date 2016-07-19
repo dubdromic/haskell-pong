@@ -19,4 +19,5 @@ executable haskell-pong
   build-depends:       base >= 4.7 && < 5,
                        OpenGL,
                        GLUT,
-                       containers
+                       containers,
+                       random

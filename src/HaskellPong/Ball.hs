@@ -24,20 +24,22 @@ instance Collider Ball where
 
 collideBall :: Collider a => [a] -> Ball -> Ball
 collideBall a b@(Ball s) = Ball $ initSprite pos 0 vel'
-  where collided = any (collides b) a
+  where paddleCollision = any (collides b) a
+        wallCollision = py >= 600 || py <= 0
         pos@(px, py) = spritePosition s
         (vx, vy) = spriteVelocity s
         vel'
-          | collided = (-vx, vy)
-          | otherwise = spriteVelocity s
+          | paddleCollision = (-vx, vy)
+          | wallCollision   = (vx, -vy)
+          | otherwise       = spriteVelocity s
 
 tickBall :: Keyboard -> Ball -> Ball
 tickBall kb (Ball s) = Ball $ initSprite pos 0 vel
   where pos = spritePosition s
         vel = spriteVelocity s
 
-initBall :: PVector2 -> Ball
-initBall p = Ball $ initSprite p 0 (5, 0)
+initBall :: PVector2 -> PVector2 -> Ball
+initBall p v = Ball $ initSprite p 0 v
 
 ballQuad :: PQuad
 ballQuad = ((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0))

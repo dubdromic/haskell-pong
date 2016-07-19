@@ -31,9 +31,9 @@ tickState kb (GameState p1 p2 b) = GameState p1' p2' b'
         p2' = tick kb p2
         b'  = collideBall [p1', p2'] $ tick kb b
 
-initGameState :: GameState
-initGameState = GameState {
+initGameState :: PVector2 -> GameState
+initGameState a = GameState {
   gameStatePlayerOne = initPlayer(10, 280),
   gameStatePlayerTwo = initPlayer(780, 280),
-  gameStateBall = initBall(395, 295)
+  gameStateBall = initBall (395, 295) a
 }

@@ -23,11 +23,15 @@ instance Collider Ball where
   vertices (Ball s) = translateQuad ballQuad $ spritePosition s
 
 collideBall :: Collider a => [a] -> Ball -> Ball
-collideBall a b@(Ball s) = Ball $ initSprite pos 0 vel'
+collideBall a b@(Ball s) = Ball $ initSprite pos' 0 vel'
   where paddleCollision = any (collides b) a
         wallCollision = py >= 600 || py <= 0
-        pos@(px, py) = spritePosition s
+        (px, py) = spritePosition s
         (vx, vy) = spriteVelocity s
+        pos'
+          | paddleCollision && px >= 400 = (770, py)
+          | paddleCollision && px <= 400 = (20, py)
+          | otherwise = (px, py)
         vel'
           | paddleCollision = (-vx, vy)
           | wallCollision   = (vx, -vy)

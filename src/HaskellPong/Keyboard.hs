@@ -8,6 +8,7 @@ newtype Keyboard = Keyboard (Set Key)
 
 keyUp = SpecialKey KeyUp
 keyDown = SpecialKey KeyDown
+keyExit = Char 'q'
 
 handleKeyEvent :: Key -> KeyState -> Keyboard -> Keyboard
 handleKeyEvent k ks (Keyboard s) = case ks of

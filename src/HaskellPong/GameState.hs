@@ -27,8 +27,8 @@ stateVertices p = pov ++ ptv ++ bv
 
 tickState :: Keyboard -> GameState -> GameState
 tickState kb (GameState p1 p2 b) = GameState p1' p2' b'
-  where p1' = tick kb p1
-        p2' = tick kb p2
+  where p1' = collidePaddle $ tick kb p1
+        p2' = collidePaddle $ tick kb p2
         b'  = collideBall [p1', p2'] $ tick kb b
 
 initGameState :: PVector2 -> GameState

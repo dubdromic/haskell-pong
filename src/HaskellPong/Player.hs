@@ -21,6 +21,14 @@ instance Tickable Player where
 instance Collider Player where
   vertices (Player s) = translateQuad playerQuad $ spritePosition s
 
+collidePaddle :: Player -> Player
+collidePaddle p@(Player ps) = Player $ initSprite pos' 0 $ spriteVelocity ps
+  where (px, py) = spritePosition ps
+        pos'
+          | py <= 0 = (px, 0)
+          | py >= 530 = (px, 530)
+          | otherwise = (px, py)
+
 tickPlayer :: Keyboard -> Player -> Player
 tickPlayer kb (Player s) = Player $ initSprite pos 0 vel
   where pos = spritePosition s

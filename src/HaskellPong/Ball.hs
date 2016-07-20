@@ -35,22 +35,19 @@ collideBall a b@(Ball s) = Ball $ initSprite pos' 0 vel'
           | isJust collidedPaddle && px < 400 = (20, py)
           | otherwise = (px, py)
         vel'
-          | isJust collidedPaddle = (-vx * 1.01, vy * 1.01) -- ballCollidedVelocity b $ fromJust collidedPaddle
+          | isJust collidedPaddle = ballCollidedVelocity b $ fromJust collidedPaddle
           | wallCollision   = (vx, -vy)
           | otherwise       = spriteVelocity s
 
--- ballCollidedVelocity :: Ball -> Player -> PVector2
--- ballCollidedVelocity b@(Ball bs) p@(Player ps) = (vx', vy')
---   where vx = if paddleX > 400 then -vx' else vx'
---         vy = -vy'
---         vx' = 5 * cos angle
---         vy' = 5 * sin angle
---         angle = ni * 60
---         ni = riy / 35
---         riy = (paddleY + 35) - (ballY + 5)
---         (paddleX, paddleY) = spritePosition ps
---         (_, ballY) = spritePosition bs
-
+-- Take a portion of the paddle's Y velocity into account
+-- after a ball collision. Also, speed up the ball on every hit.
+ballCollidedVelocity :: Ball -> Player -> PVector2
+ballCollidedVelocity b@(Ball bs) p@(Player ps) = (vx, vy)
+  where vx = -bvx * 1.05
+        vy = (bvy + pvym) * 1.05
+        (bvx, bvy) = spriteVelocity bs
+        pvym = pvy * 0.1
+        (_, pvy) = spriteVelocity ps
 
 tickBall :: Keyboard -> Ball -> Ball
 tickBall kb (Ball s) = Ball $ initSprite pos 0 vel

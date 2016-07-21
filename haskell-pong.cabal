@@ -20,4 +20,5 @@ executable haskell-pong
                        OpenGL,
                        GLUT,
                        containers,
-                       random
+                       random,
+                       time

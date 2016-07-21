@@ -12,3 +12,9 @@ translateQuad t v = mapPQuad (/+ v) t
 (x, y) /+ (x', y') = (x + x', y + y')
 
 infixl 6 /+
+
+(x, y) /* s = (s * x, s * y)
+s */ (x, y) = (s * x, s * y)
+
+infixl 7 /*
+infixl 7 */

@@ -5,10 +5,10 @@ import Graphics.UI.GLUT
 import HaskellPong.Geometry
 
 class Renderable r where
-  vertices :: r -> [PQuad]
+  vertices :: Float -> r -> [PQuad]
 
-  render :: r -> IO ()
-  render = renderVertices . vertices
+  render :: Float -> r -> IO ()
+  render i = renderVertices . vertices i
 
 renderVertices :: [PQuad] -> IO ()
 renderVertices quads = do

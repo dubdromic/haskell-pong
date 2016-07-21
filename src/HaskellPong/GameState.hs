@@ -19,11 +19,11 @@ instance Renderable GameState where
 instance Tickable GameState where
   tick = tickState
 
-stateVertices :: GameState -> [PQuad]
-stateVertices p = pov ++ ptv ++ bv
-  where pov = (vertices . gameStatePlayerOne) p
-        ptv = (vertices . gameStatePlayerTwo) p
-        bv  = (vertices . gameStateBall) p
+stateVertices :: Float -> GameState -> [PQuad]
+stateVertices i p = pov ++ ptv ++ bv
+  where pov = (vertices i . gameStatePlayerOne) p
+        ptv = (vertices i . gameStatePlayerTwo) p
+        bv  = (vertices i . gameStateBall) p
 
 tickState :: Keyboard -> GameState -> GameState
 tickState kb (GameState p1 p2 b) = GameState p1' p2' b'

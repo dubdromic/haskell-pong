@@ -9,31 +9,31 @@ import HaskellPong.GameState
 import System.Random
 import System.Exit
 import Control.Monad
+import Data.Time.Clock.POSIX
+import Debug.Trace
 
-type KeyboardRef = IORef Keyboard
+type KeyboardRef  = IORef Keyboard
+type TimeRef      = IORef POSIXTime
+type StateRef     = IORef GameState
+data CallbackRefs = CallbackRefs TimeRef TimeRef KeyboardRef StateRef
 
-handleKeyboard :: KeyboardRef -> KeyboardMouseCallback
-handleKeyboard kb k ks _ _ = modifyIORef kb (handleKeyEvent k ks)
+handleKeyboard :: CallbackRefs -> KeyboardMouseCallback
+handleKeyboard refs@(CallbackRefs _ _ kbr _) k ks _ _ = modifyIORef kbr (handleKeyEvent k ks)
+
+initCallbackRefs :: IO CallbackRefs
+initCallbackRefs = do
+  gen <- newStdGen
+  kb <- newIORef initKeyboard
+  accum <- newIORef 0
+  prev <- getPOSIXTime >>= newIORef
+  st <- newIORef $ initGameState $ randomVector gen
+  return $ CallbackRefs accum prev kb st
 
 initializeCallbacks :: IO ()
 initializeCallbacks = do
-  kb <- newIORef initKeyboard
-  xgen <- newStdGen
-  let vector = randomVector xgen
-  keyboardMouseCallback $= Just (handleKeyboard kb)
-  displayCallback $= renderViewport (initGameState vector)
-  addTimerCallback 0 $ gameTick kb (initGameState vector)
-
-gameTick :: KeyboardRef -> GameState -> IO ()
-gameTick kb t = do
-  keys <- readIORef kb
-  xgen <- newStdGen
-  handleExit keys
-  let t' = handleRestart keys xgen t
-  let newTickable = tick keys t'
-  displayCallback $= renderViewport newTickable
-  addTimerCallback 33 $ gameTick kb newTickable
-  postRedisplay Nothing
+  refs <- initCallbackRefs
+  keyboardMouseCallback $= Just (handleKeyboard refs)
+  displayCallback $= renderViewport refs
 
 handleRestart :: Keyboard -> StdGen -> GameState -> GameState
 handleRestart kb gen t = t'
@@ -53,9 +53,37 @@ randomVector gen = do
   where l = [-5.5, -5.0, -4.0, 4.0, 5.0, 5.5]
         ls = length l - 1
 
+renderViewport :: CallbackRefs -> IO ()
+renderViewport refs@(CallbackRefs ar tr kb rr) = do
+  current <- getPOSIXTime
+  prev <- readIORef tr
+  accum <- readIORef ar
+  keys <- readIORef kb
+  gs <- readIORef rr
+  gen <- newStdGen
 
-renderViewport :: Renderable r => r -> IO ()
-renderViewport r = do
+  handleExit keys
+
+  let frameTime = min 0.1 $ current - prev
+      newAccum = accum + frameTime
+
+  let consumeAccum acc = if acc >= 0.0333
+          then do
+            modifyIORef rr $ tick keys
+            modifyIORef rr $ handleRestart keys gen
+            consumeAccum $ acc - 0.0333
+          else return acc
+
+  newAccum' <- consumeAccum newAccum
+
+  writeIORef tr current
+  writeIORef ar newAccum'
+
+  let interpolation = realToFrac $ newAccum' / 0.0333
+
+  r <- readIORef rr
+
   clear [ColorBuffer]
-  render r
+  render interpolation r
   swapBuffers
+  postRedisplay Nothing

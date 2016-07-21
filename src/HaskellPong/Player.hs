@@ -12,8 +12,9 @@ data Player = Player {
 }
 
 instance Renderable Player where
-  vertices (Player s) = map translation [playerQuad]
-    where translation t = translateQuad t $ spritePosition s
+  vertices i (Player s) = map translation [playerQuad]
+    where translation t = translateQuad t $ spritePosition s'
+          s' = interpolatedSprite i s
 
 instance Tickable Player where
   tick = tickPlayer
@@ -22,15 +23,16 @@ instance Collider Player where
   vertices (Player s) = translateQuad playerQuad $ spritePosition s
 
 collidePaddle :: Player -> Player
-collidePaddle p@(Player ps) = Player $ initSprite pos' 0 $ spriteVelocity ps
-  where (px, py) = spritePosition ps
+collidePaddle p@(Player ps) = Player $ initSprite pos' 0 vel pos
+  where pos@(px, py) = spritePreviousPosition ps
         pos'
           | py <= 0 = (px, 0)
           | py >= 530 = (px, 530)
           | otherwise = (px, py)
+        vel = spriteVelocity ps
 
 tickPlayer :: Keyboard -> Player -> Player
-tickPlayer kb (Player s) = Player $ initSprite pos 0 vel
+tickPlayer kb (Player s) = Player $ initSprite pos 0 vel pos
   where pos = spritePosition s
         vel
           | key keyDown = (0, 10)
@@ -39,7 +41,7 @@ tickPlayer kb (Player s) = Player $ initSprite pos 0 vel
         key = isKeyDown kb
 
 initPlayer :: PVector2 -> Player
-initPlayer p = Player $ initSprite p 0 (0,0)
+initPlayer p = Player $ initSprite p 0 (0,0) p
 
 playerQuad :: PQuad
 playerQuad = ((0.0, 0.0), (10.0, 0.0), (10.0, 70.0), (0.0, 70.0))

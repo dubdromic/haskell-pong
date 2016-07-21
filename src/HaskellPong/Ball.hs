@@ -40,10 +40,10 @@ collideBall a b@(Ball s) = Ball $ initSprite pos 0 vel' pos
 -- after a ball collision. Also, speed up the ball on every hit.
 ballCollidedVelocity :: Ball -> Player -> PVector2
 ballCollidedVelocity b@(Ball bs) p@(Player ps) = (vx, vy)
-  where vx = -bvx * 1.05
-        vy = (bvy + pvym) * 1.05
+  where vx = -bvx * 1.07
+        vy = (bvy + pvym) * 1.07
         (bvx, bvy) = spriteVelocity bs
-        pvym = pvy * 0.1
+        pvym = pvy * 0.2
         (_, pvy) = spriteVelocity ps
 
 tickBall :: Keyboard -> Ball -> Ball

@@ -43,8 +43,8 @@ ballCollidedVelocity b@(Ball bs) p@(Player ps) = (vx, vy)
   where vx = -bvx * 1.07
         vy = (bvy + pvym) * 1.07
         (bvx, bvy) = spriteVelocity bs
-        pvym = pvy * 0.2
-        (_, pvy) = spriteVelocity ps
+        pvym = -pvy * 0.3
+        (_, pvy) = spriteInstantVelocity ps
 
 tickBall :: Keyboard -> Ball -> Ball
 tickBall kb (Ball s) = Ball $ initSprite pos 0 vel pos

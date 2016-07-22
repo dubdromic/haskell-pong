@@ -23,22 +23,18 @@ instance Collider Player where
   vertices (Player s) = translateQuad playerQuad $ spritePosition s
 
 collidePaddle :: Player -> Player
-collidePaddle p@(Player ps) = Player $ initSprite pos' 0 vel pos
-  where pos@(px, py) = spritePreviousPosition ps
-        pos'
-          | py <= 0 = (px, 0)
-          | py >= 530 = (px, 530)
-          | otherwise = (px, py)
-        vel = spriteVelocity ps
+collidePaddle = id
 
 tickPlayer :: Keyboard -> Player -> Player
-tickPlayer kb (Player s) = Player $ initSprite pos 0 vel pos
-  where pos = spritePosition s
-        vel
-          | key keyDown = (0, 10)
-          | key keyUp = (0, -10)
-          | otherwise = (0, 0)
+tickPlayer kb (Player s) = Player $ initSprite (px', py') 0 (0, 0) pos
+  where pos@(px, py) = spritePosition s
+        px' = px
+        py'
+          | py < 530 && key keyDown = py + 10
+          | py > 0 && key keyUp = py - 10
+          | otherwise = py
         key = isKeyDown kb
+        movable = py >= 0 && py <= 530
 
 initPlayer :: PVector2 -> Player
 initPlayer p = Player $ initSprite p 0 (0,0) p

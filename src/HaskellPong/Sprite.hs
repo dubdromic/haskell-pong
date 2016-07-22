@@ -9,6 +9,11 @@ data Sprite = Sprite
     spritePreviousPosition :: PVector2
   }
 
+spriteInstantVelocity :: Sprite -> PVector2
+spriteInstantVelocity s = (sx' - sx, sy' - sy)
+  where (sx, sy) = spritePosition s
+        (sx', sy') = spritePreviousPosition s
+
 initSprite :: PVector2 -> Float -> PVector2 -> PVector2 -> Sprite
 initSprite pos ang vel ppos = Sprite (pos /+ vel) ang vel ppos
 
